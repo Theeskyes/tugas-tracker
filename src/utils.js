@@ -17,6 +17,18 @@ export function labelCat(c) {
   return { sekolah: 'Sekolah', freelance: 'Freelance', pribadi: 'Pribadi' }[c] || c
 }
 
+export function iconCat(c) {
+  return { sekolah: '📘', freelance: '💻', pribadi: '🛒' }[c] || '•'
+}
+
+export function greeting() {
+  const h = new Date().getHours()
+  if (h < 11) return 'Pagi 👋'
+  if (h < 15) return 'Siang 👋'
+  if (h < 18) return 'Sore 👋'
+  return 'Malam 👋'
+}
+
 const STORAGE_KEY = 'tugas-tracker-data'
 
 export function loadTasks() {

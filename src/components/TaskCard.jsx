@@ -1,4 +1,5 @@
-import { isOverdue, fmtDate, labelCat } from '../utils'
+import { useState } from 'react'
+import { isOverdue, fmtDate, labelCat, iconCat } from '../utils'
 
 const catTagClasses = {
   sekolah: 'bg-sekolahBg text-sekolah',
@@ -7,17 +8,27 @@ const catTagClasses = {
 }
 
 export default function TaskCard({ task, onToggle, onDelete, removing, index }) {
+  const [justDone, setJustDone] = useState(false)
+
+  function handleToggle() {
+    if (!task.done) {
+      setJustDone(true)
+      setTimeout(() => setJustDone(false), 700)
+    }
+    onToggle(task.id)
+  }
+
   return (
     <div
-      className={`flex gap-3 items-start bg-surface border border-border rounded-2xl p-3.5 transition-all duration-200 animate-fadeUp ${
+      className={`relative flex gap-3 items-start bg-surface rounded-2xl p-3.5 transition-all duration-200 animate-fadeUp ${
         removing ? 'opacity-0 scale-95 translate-x-5' : ''
-      }`}
+      } ${justDone ? 'scale-[0.98]' : 'scale-100'}`}
       style={{ animationDelay: `${index * 0.03}s` }}
     >
       <button
-        onClick={() => onToggle(task.id)}
+        onClick={handleToggle}
         aria-label="Tandai selesai"
-        className={`w-[21px] h-[21px] rounded-[7px] border-[1.5px] flex-none mt-0.5 flex items-center justify-center transition-all duration-200 ${
+        className={`w-[22px] h-[22px] rounded-[8px] border-[1.5px] flex-none mt-0.5 flex items-center justify-center transition-all duration-200 ${
           task.done ? 'bg-textSecondary border-textSecondary' : 'border-borderStrong bg-transparent'
         }`}
       >
@@ -37,14 +48,15 @@ export default function TaskCard({ task, onToggle, onDelete, removing, index }) 
       </button>
 
       <div className="flex-1 min-w-0">
-        <div
-          className={`text-[14.5px] leading-snug transition-colors duration-200 ${
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-[13px] flex-none">{iconCat(task.cat)}</span>
+          <div className={`text-[14.5px] leading-snug transition-colors duration-200 ${
             task.done ? 'text-textMuted line-through opacity-70' : 'text-textMain'
-          }`}
-        >
-          {task.title}
+          }`}>
+            {task.title}
+          </div>
         </div>
-        <div className="flex gap-1.5 items-center mt-1.5 flex-wrap">
+        <div className="flex gap-1.5 items-center mt-1.5 flex-wrap pl-[19px]">
           <span className={`text-[10.5px] px-2 py-0.5 rounded-full font-medium ${catTagClasses[task.cat]}`}>
             {labelCat(task.cat)}
           </span>
@@ -66,6 +78,12 @@ export default function TaskCard({ task, onToggle, onDelete, removing, index }) 
           <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6" />
         </svg>
       </button>
+
+      {justDone && (
+        <div className="absolute -top-2 right-3 text-[11px] text-freelance bg-freelanceBg px-2 py-0.5 rounded-full animate-fadeUp pointer-events-none">
+          Nice! 🎉
+        </div>
+      )}
     </div>
   )
-}
+}q
